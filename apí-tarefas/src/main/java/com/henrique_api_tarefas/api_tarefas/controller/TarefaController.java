@@ -2,7 +2,8 @@ package com.henrique_api_tarefas.api_tarefas.controller;
 
 import com.henrique_api_tarefas.api_tarefas.dto.TarefaRequestDto;
 import com.henrique_api_tarefas.api_tarefas.dto.TarefaResponseDto;
-import com.henrique_api_tarefas.api_tarefas.model.Tarefa;
+import com.henrique_api_tarefas.api_tarefas.dto.TarefasStatusRequestDto;
+import com.henrique_api_tarefas.api_tarefas.model.StatusTarefa;
 import com.henrique_api_tarefas.api_tarefas.service.TarefaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +42,7 @@ public class TarefaController {
     }
 
     @Operation(summary = "Concluir uma tarefa")
-    @PatchMapping("/({id}/concluir")
+    @PatchMapping("/({id}/concluir/status")
     public TarefaResponseDto concluir (@PathVariable Long id){
         return tarefaService.concluir(id);
     }
@@ -56,5 +57,27 @@ public class TarefaController {
     @PutMapping("/{id}")
     public TarefaResponseDto atualizar(@PathVariable Long id, @RequestBody @Valid TarefaRequestDto dto){
         return tarefaService.atualizar(id, dto);
+    }
+
+    @PatchMapping("/{id}/status")
+    public TarefaResponseDto atualizarStatus(
+            @PathVariable Long id,
+            @RequestBody @Valid TarefasStatusRequestDto dto
+    ) {
+        return tarefaService.atualizarStatus(id, dto);
+    }
+
+    @GetMapping("/status/{status}")
+    public List<TarefaResponseDto> buscarPorStatus(
+            @PathVariable StatusTarefa status) {
+
+        return tarefaService.buscarPorStatus(status);
+    }
+
+    @GetMapping("/buscar")
+    public List<TarefaResponseDto> buscarPorTitulo(
+            @RequestParam String titulo) {
+
+        return tarefaService.buscarPorTitulo(titulo);
     }
 }

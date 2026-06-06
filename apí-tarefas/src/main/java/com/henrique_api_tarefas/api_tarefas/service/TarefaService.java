@@ -2,6 +2,7 @@ package com.henrique_api_tarefas.api_tarefas.service;
 
 import com.henrique_api_tarefas.api_tarefas.dto.TarefaRequestDto;
 import com.henrique_api_tarefas.api_tarefas.dto.TarefaResponseDto;
+import com.henrique_api_tarefas.api_tarefas.dto.TarefasStatusRequestDto;
 import com.henrique_api_tarefas.api_tarefas.exception.ResourceNotFoundException;
 import com.henrique_api_tarefas.api_tarefas.model.StatusTarefa;
 import com.henrique_api_tarefas.api_tarefas.model.Tarefa;
@@ -82,5 +83,36 @@ public class TarefaService {
                 tarefa.getDataCriacao(),
                 tarefa.getDataConclusao()
         );
+    }
+
+
+    public TarefaResponseDto atualizarStatus(Long id, TarefasStatusRequestDto dto){
+        Tarefa tarefa = buscarEntidadePorId(id);
+
+        tarefa.setStatus(dto.status());
+
+        if (dto.status() == StatusTarefa.CONCLUIDA) {
+            tarefa.setDataConclusao(LocalDateTime.now());
+        } else {
+            tarefa.setDataConclusao(null);
+        }
+
+        Tarefa tarefaAtualizada = tarefaRepository.save(tarefa);
+
+        return toResponseDto(tarefaAtualizada);
+    }
+
+    public List<TarefaResponseDto> buscarPorStatus(StatusTarefa status) {
+        return tarefaRepository.findByStatus(status)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+    }
+
+    public List<TarefaResponseDto> buscarPorTitulo(String titulo) {
+        return tarefaRepository.findByTituloContainingIgnoreCase(titulo)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
     }
 }
