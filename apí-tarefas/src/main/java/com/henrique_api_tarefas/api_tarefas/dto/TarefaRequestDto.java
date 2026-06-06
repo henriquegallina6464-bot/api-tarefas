@@ -1,0 +1,16 @@
+package com.henrique_api_tarefas.api_tarefas.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record TarefaRequestDto(
+
+        @NotBlank(message = "O titulo é obrigatório")
+        @Size(min = 3, max = 100, message = "O titulo deve ter entre 3 a 100 caracteres")
+        String titulo,
+
+        @Size(max = 255, message = "A descricao deve ter no maximo 255 caracteres")
+        String descricao
+
+) {
+}
